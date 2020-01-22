@@ -1,13 +1,14 @@
 //function to add the javascript of the extension to the browser's DOM
 let injectExtension = function(){
   let parents = document.getElementsByClassName("s-item") //s-item is the class for listings on ebay.
-  for (let element of parents) {
+  for (let parent of parents) {
     let button = document.createElement("button");
     button.innerHTML = "BUTTON"
     button.className = "toggleCartButton";
-    button.addEventListener("click", ()=>alert("hi test."), false);
-    
-    element.appendChild(button)
+    button.addEventListener("click", ()=>{
+      parent.className += " salvage-extension-selected";
+    } , false);
+    parent.appendChild(button)
   }
 }
 //function to remove content
