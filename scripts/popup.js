@@ -1,17 +1,17 @@
-let extensionActivate = document.getElementById('extensionActivate')
+let extensionActivate = document.getElementById('extensionActivateListener')
 
 
-chrome.storage.sync.get(['extensionStatus'], function(response) {
-  if (response['extensionActive'] == 'on'){
+chrome.storage.sync.get(['extensionListening'], function(response) {
+  if (response['extensionListening'] == 'on'){
     document.getElementById("extensionCheckbox").checked = true;
   }
 });
 
-
+console.log(extensionActivate)
 extensionActivate.onclick = function(element){
   chrome.storage.sync.get(['extensionListening'], function(response) {
     
-    if (response['extensionListening'] == 'inactive'){
+    if (response['extensionListening'] == 'off'){
       chrome.storage.sync.set({'extensionListening':'on'}, function() {
         console.log('extension extension listening saved (on)');
       });
