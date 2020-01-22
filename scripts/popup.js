@@ -2,25 +2,22 @@ let extensionActivate = document.getElementById('extensionActivate')
 
 
 chrome.storage.sync.get(['extensionStatus'], function(response) {
-  if (response['extensionStatus'] == 'active'){
+  if (response['extensionActive'] == 'on'){
     document.getElementById("extensionCheckbox").checked = true;
   }
 });
 
 
-
-
-
 extensionActivate.onclick = function(element){
-  chrome.storage.sync.get(['extensionStatus'], function(response) {
+  chrome.storage.sync.get(['extensionListening'], function(response) {
     
-    if (response['extensionStatus'] == 'inactive'){
-      chrome.storage.sync.set({'extensionStatus':'active'}, function() {
-        console.log('extension status settings saved (active)');
+    if (response['extensionListening'] == 'inactive'){
+      chrome.storage.sync.set({'extensionListening':'on'}, function() {
+        console.log('extension extension listening saved (on)');
       });
     } else {
-      chrome.storage.sync.set({'extensionStatus':'inactive'}, function() {
-        console.log('extension status settings saved (inactive)');
+      chrome.storage.sync.set({'extensionListening':'off'}, function() {
+        console.log('extension extension listening saved (off)');
       });
     }
   
