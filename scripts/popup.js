@@ -7,17 +7,17 @@ chrome.storage.sync.get(['extensionListening'], function(response) {
   }
 });
 
-console.log(extensionActivate)
+
 extensionActivate.onclick = function(element){
   chrome.storage.sync.get(['extensionListening'], function(response) {
     
     if (response['extensionListening'] == 'off'){
       chrome.storage.sync.set({'extensionListening':'on'}, function() {
-        console.log('extension extension listening saved (on)');
+        console.log('extension listening status saved (on)');
       });
     } else {
       chrome.storage.sync.set({'extensionListening':'off'}, function() {
-        console.log('extension extension listening saved (off)');
+        console.log('extension listening status saved (off)');
       });
     }
   
