@@ -1,4 +1,4 @@
-
+//switches width of iframe from 0px to XXXpx and vice-versa
 function toggleIframe(){
   if(iframe.className == "salvage-extension-iframe-off"){
       iframe.className="salvage-extension-iframe-on";
@@ -48,7 +48,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     }
   }
 });
-
 
 //install the right sidebar for the extension, and give it 0 width
 let iframe = document.createElement('iframe');
