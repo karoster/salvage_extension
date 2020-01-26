@@ -1,10 +1,12 @@
 //switches width of iframe from 0px to XXXpx and vice-versa
 function toggleIframe(){
-  if(iframe.className == "salvage-extension-iframe-off"){
-      iframe.className="salvage-extension-iframe-on";
+  if(iframe.className == "salvage-extension-iframe salvage-extension-iframe-off"){
+      iframe.classList.remove("salvage-extension-iframe-off");
+      iframe.classList.add("salvage-extension-iframe-on");
   }
   else{
-      iframe.className="salvage-extension-iframe-off";
+      iframe.classList.remove("salvage-extension-iframe-on");
+      iframe.classList.add("salvage-extension-iframe-off");
   }
 }
 
@@ -18,8 +20,8 @@ let injectExtensionListeners = function(){
     let button = document.createElement("button");
     button.innerHTML = "BUTTON";
     button.className = "toggleCartButton";
-
     button.addEventListener("click", buttonEventListener(parent), false);
+
     parent.appendChild(button);
   }
 }
@@ -27,10 +29,9 @@ let injectExtensionListeners = function(){
 //function to remove extension webpage buttons and associated event listeners
 let removeExtensionListeners = function(){
   let buttons = document.getElementsByClassName("toggleCartButton");
-  for(let button of buttons){
-    button.parentNode.removeChild(button);
+  for(let i = buttons.length-1; i>0; i--){
+    buttons[i].parentNode.removeChild(buttons[i]);
   }
-
 }
 
 //updates the website DOM when there is a change in extension DOM
@@ -51,7 +52,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 //install the right sidebar for the extension, and give it 0 width
 let iframe = document.createElement('iframe');
-iframe.className = "salvage-extension-iframe-off"
+iframe.className = "salvage-extension-iframe salvage-extension-iframe-off"
+iframe.id = "salvage-sidebar"
 iframe.src = chrome.extension.getURL("./../popup.html")
 document.body.appendChild(iframe);
 
@@ -59,13 +61,31 @@ document.body.appendChild(iframe);
 //(i.e. add extension iframe and event listeners on page refresh if extension is originally open and on)
 chrome.storage.sync.get(['extensionStatus', 'extensionListening'], function(response) {
   if (response['extensionStatus'] == 'active'){
-    iframe.className="salvage-extension-iframe-on"
+    iframe.classList.remove("salvage-extension-iframe-off");
+    iframe.classList.add("salvage-extension-iframe-on");
   }
 
   if(response['extensionListening'] == 'on'){
     injectExtensionListeners()
   }
 });
+
+// When the user scrolls the page, execute stickySidebar
+window.onscroll = function() {(stickySidebar())};
+
+// Get the offset position of the iframe
+let sticky = iframe.offsetTop;
+// Add the sticky class to the iframe when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function stickySidebar() {
+  if (window.pageYOffset >= sticky) {
+    iframe.style.top = "0px"
+    // iframe.classList.add("sticky")
+  } else {
+    iframe.style.top = (sticky - window.pageYOffset).toString() + "px";
+    // iframe.classList.remove("sticky");
+  }
+}
+
 
 
 console.log("script has run...")
