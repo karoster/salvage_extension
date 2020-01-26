@@ -23,7 +23,7 @@
         },
         "default_title": "Salvage Calculator"    
     },
-    "web_accessible_resources": ["popup.html"],
+    "web_accessible_resources": ["./scripts/extensionInstall.js","popup.html"],
     "icons": {
         "16": "images/get_started16.png",
         "32": "images/get_started32.png",

@@ -8,6 +8,10 @@ chrome.runtime.onInstalled.addListener(function() {
     console.log("The extension is off by default.");
   });
 
+  chrome.storage.sync.set({cart: {}}, function() {
+    console.log("The cart is empty by default.");
+  });
+
   //add event listener to browser extension icon, set extensionStatus on click.
   chrome.pageAction.onClicked.addListener(function(){
     chrome.storage.sync.get(['extensionStatus'], function(response) {

@@ -1,3 +1,5 @@
+
+
 //switches width of iframe from 0px to XXXpx and vice-versa
 function toggleIframe(){
   if(iframe.className == "salvage-extension-iframe salvage-extension-iframe-off"){
@@ -10,11 +12,55 @@ function toggleIframe(){
   }
 }
 
+//button event listener helper to get the prices/sold status from a listing
+//returns [price, saleType] saleType can be STRIKETHROUGH, ACTIVE, or POSITIVE
+//STRIKETHROUGH --> bestoffer was taken, ACTIVE --> listing is still live, POSITIVE --> Item sold for that amount
+function getPrices(parent){
+  let result = [];
+  //hard coding location of price data... finding by classnames is long without jquery...
+  let priceIfActive = parent.querySelector(".s-item__price");
+    // .querySelector(".s-item__wrapper")
+    // .querySelector(".s-item__info")
+    // .querySelector(".s-item__details")
+    // .querySelector(".s-item__detail")
+    // .querySelector(".s-item__price");
+  
+  //if user is looking at sold listings, "priceIfActive" will have a child span with class "POSITIVE [, ITALIC, STRIKETHROUGH]"
+  let priceIfSold = priceIfActive.firstElementChild
+  if (priceIfSold){
+    result.push(priceIfSold.innerHTML.slice(1, priceIfSold.length));
+    if (priceIfSold.classList.contains("STRIKETHROUGH")){
+      result.push("STRIKETHROUGH")
+    } else {result.push("POSITIVE")}
+
+  }else{
+    result.push(priceIfActive.innerHTML.slice(1,priceIfActive.length));
+    result.push("ACTIVE")
+  }
+  return result
+}
+
+//event listener to install on each listing's button.
+let buttonEventListener = parent => () => {
+  chrome.storage.sync.get(['cart'], function(response) {
+    
+    if(parent.classList.contains("salvage-extension-selected")){
+      delete response['cart'][parent.id]
+      chrome.storage.sync.set({cart: response['cart']}, function() {
+        parent.classList.remove("salvage-extension-selected");
+      });
+    }else{
+      response['cart'][parent.id] = getPrices(parent)
+      chrome.storage.sync.set({cart: response['cart']}, function() {
+        parent.classList.add("salvage-extension-selected");
+      });
+    }
+  });
+}
 
 //function to add the javascript of the extension to the browser's DOM
-let injectExtensionListeners = function(){
-  let parents = document.getElementsByClassName("s-item") //s-item is the class for listings on ebay.
-  let buttonEventListener = parent => () => parent.className += " salvage-extension-selected"
+function injectExtensionListeners(){
+  let parents = document.getElementsByClassName("s-item"); //s-item is the class for listings on ebay.
 
   for (let parent of parents) {
     let button = document.createElement("button");
@@ -27,18 +73,22 @@ let injectExtensionListeners = function(){
 }
 
 //function to remove extension webpage buttons and associated event listeners
-let removeExtensionListeners = function(){
+function removeExtensionListeners(){
   let buttons = document.getElementsByClassName("toggleCartButton");
   for(let i = buttons.length-1; i>0; i--){
-    buttons[i].parentNode.removeChild(buttons[i]);
+    let parent = buttons[i].parentNode;
+    parent.classList.remove("salvage-extension-selected");
+    parent.removeChild(buttons[i]);
   }
 }
 
-//updates the website DOM when there is a change in extension DOM
+//updates the extension DOM when action is fired to storage
+
+//use sets to get diff, make changes. or RERENDER all...
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionOpenChange = changes['extensionStatus'];
-  let extensionListeningChange = changes['extensionListening']
-  //return if the change to storage was something else
+  let extensionListeningChange = changes['extensionListening'];
+  let extensionCartChange = changes['cart'];
   if(extensionOpenChange){ toggleIframe() }
     
   if(extensionListeningChange){
@@ -48,13 +98,17 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
       removeExtensionListeners();
     }
   }
+
+  if (extensionCartChange){
+    console.log(extensionCartChange)
+  }
 });
 
 //install the right sidebar for the extension, and give it 0 width
 let iframe = document.createElement('iframe');
-iframe.className = "salvage-extension-iframe salvage-extension-iframe-off"
-iframe.id = "salvage-sidebar"
-iframe.src = chrome.extension.getURL("./../popup.html")
+iframe.className = "salvage-extension-iframe salvage-extension-iframe-off";
+iframe.id = "salvage-sidebar";
+iframe.src = chrome.extension.getURL("./../popup.html");
 document.body.appendChild(iframe);
 
 //get the initial state of the extension
@@ -66,23 +120,20 @@ chrome.storage.sync.get(['extensionStatus', 'extensionListening'], function(resp
   }
 
   if(response['extensionListening'] == 'on'){
-    injectExtensionListeners()
+    injectExtensionListeners();
   }
 });
 
 // When the user scrolls the page, execute stickySidebar
 window.onscroll = function() {(stickySidebar())};
 
-// Get the offset position of the iframe
 let sticky = iframe.offsetTop;
-// Add the sticky class to the iframe when you reach its scroll position. Remove "sticky" when you leave the scroll position
+// update iframe distance from top on scroll
 function stickySidebar() {
   if (window.pageYOffset >= sticky) {
-    iframe.style.top = "0px"
-    // iframe.classList.add("sticky")
+    iframe.style.top = "0px";
   } else {
     iframe.style.top = (sticky - window.pageYOffset).toString() + "px";
-    // iframe.classList.remove("sticky");
   }
 }
 
