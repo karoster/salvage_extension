@@ -17,14 +17,7 @@ function toggleIframe(){
 //STRIKETHROUGH --> bestoffer was taken, ACTIVE --> listing is still live, POSITIVE --> Item sold for that amount
 function getPrices(parent){
   let result = [];
-  //hard coding location of price data... finding by classnames is long without jquery...
   let priceIfActive = parent.querySelector(".s-item__price");
-    // .querySelector(".s-item__wrapper")
-    // .querySelector(".s-item__info")
-    // .querySelector(".s-item__details")
-    // .querySelector(".s-item__detail")
-    // .querySelector(".s-item__price");
-  
   //if user is looking at sold listings, "priceIfActive" will have a child span with class "POSITIVE [, ITALIC, STRIKETHROUGH]"
   let priceIfSold = priceIfActive.firstElementChild
   if (priceIfSold){
@@ -40,17 +33,24 @@ function getPrices(parent){
   return result
 }
 
+// function getTitle(parent){
+//   let title = parent.querySelector("s-item__title")
+//   return title
+}
+
 //event listener to install on each listing's button.
 let buttonEventListener = parent => () => {
   chrome.storage.sync.get(['cart'], function(response) {
-    
+    //using title as key is space efficient, and almost always unique
+    //runs into problems if two listings have exactly identical titles (unlikely for app purpose)
+    let titleKey = parent.querySelector("s-item__title").innerHTML;
     if(parent.classList.contains("salvage-extension-selected")){
-      delete response['cart'][parent.id]
+      delete response['cart'][titleKey]
       chrome.storage.sync.set({cart: response['cart']}, function() {
         parent.classList.remove("salvage-extension-selected");
       });
     }else{
-      response['cart'][parent.id] = getPrices(parent)
+      response['cart'][titleKey] = getPrices(parent)
       chrome.storage.sync.set({cart: response['cart']}, function() {
         parent.classList.add("salvage-extension-selected");
       });
