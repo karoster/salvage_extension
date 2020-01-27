@@ -23,6 +23,8 @@ extensionActivate.onclick = function(element){
 }
 
 
+// NEED TO ADD LINE TO INITIALIZE TEXT STORE//
+
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionCartChange = changes['cart'];
 

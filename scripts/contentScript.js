@@ -2,7 +2,7 @@
 let iframe = document.createElement('iframe');
 iframe.className = "salvage-extension-iframe salvage-extension-iframe-off";
 iframe.id = "salvage-sidebar";
-iframe.src = chrome.extension.getURL("./../popup.html");
+iframe.src = chrome.extension.getURL("./../sidebar.html");
 document.body.appendChild(iframe);
 
 //switches width of iframe from 0px to XXXpx and vice-versa
@@ -26,7 +26,6 @@ let buttonEventListener = parent => () => {
     //runs into problems if two listings have exactly identical titles (unlikely for app purpose)
 
     let titleKey = parent.querySelector(".s-item__title").innerHTML.replace(/ /g, "-")
-    console.log(titleKey);
     if(parent.classList.contains("salvage-extension-selected")){
       delete response['cart'][titleKey]
       chrome.storage.sync.set({cart: response['cart']}, function() {
@@ -60,39 +59,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     }
   }
 
-  //might get error with adding/deleting...
-  // if (extensionCartChange){
-  //   let diff = symmetricDifference(Object.keys(extensionCartChange.newValue), Object.keys(extensionCartChange.oldValue));
-  //   console.log(iframe);
-  //   let parent = document.getElementById("salvage-sidebar");
-  //   console.log(parent.contentWindow.document.body.querySelector('list-of-auctions'))
-  //   for (let diffEle of diff){
-  //     if (parent.querySelector(`#${diffEle}`)){
-  //       parent.removeChild(child);
-  //     } else {
-  //       let child = document.createElement("li");
-  //       child.innerHTML = `${diffEle}...${extensionCartChange.newValue[diffEle][0]}`;
-  //       parent.appendChild(child);
-  //     } 
-
-  //   }
-  // }
 });
 
 /* HELPER FUNCTIONS */
-// function symmetricDifference(newValues, oldValues) {
-//   let setB = new Set(oldValues);
-//   let _difference = new Set(newValues);
-
-//   for (let elem of setB) {
-//       if (_difference.has(elem)) {
-//           _difference.delete(elem)
-//       } else {
-//           _difference.add(elem)
-//       }
-//   }
-//   return _difference
-// }
 
 //function to add the javascript of the extension to the browser's DOM
 function injectExtensionListeners(){

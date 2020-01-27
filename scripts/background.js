@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 
   //add event listener to browser extension icon, set extensionStatus on click.
-  chrome.pageAction.onClicked.addListener(function(){
+  chrome.browserAction.onClicked.addListener(function(tab){
     chrome.storage.sync.get(['extensionStatus'], function(response) {
       if (response['extensionStatus'] == 'active'){
         chrome.storage.sync.set({extensionStatus: 'inactive'}, function() {
