@@ -1,9 +1,17 @@
 let extensionActivate = document.getElementById('extensionActivateListener')
 
 //flip the extension toggle switch to be consistent with initial listening state (aesthetic)
-chrome.storage.sync.get(['extensionListening'], function(response) {
+chrome.storage.sync.get(['extensionListening', 'cart'], function(response) {
   if (response['extensionListening'] == 'on'){
     document.getElementById("extensionCheckbox").checked = true;
+  }
+
+  let parent = document.getElementById("list-of-auctions");
+  for(let item in response['cart']){
+    let child = document.createElement("li");
+    child.id = `${item}`
+    child.innerHTML = `${item}...${response['cart'][item][0]}`;
+    parent.appendChild(child);
   }
 });
 
@@ -15,7 +23,7 @@ extensionActivate.onclick = function(element){
       chrome.storage.sync.set({'extensionListening':'on'}, function() {
       });
     } else {
-      chrome.storage.sync.set({'extensionListening':'off'}, function() {
+      chrome.storage.sync.set({'extensionListening':'off', 'cart':{}}, function() {
       });
     }
   
@@ -27,20 +35,25 @@ extensionActivate.onclick = function(element){
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionCartChange = changes['cart'];
+  let extensionListeningChange = changes['extensionListening'];
 
-  //might get error with adding/deleting...
+  if(extensionListeningChange){
+    if(extensionListeningChange.newValue == "on"){
+      document.getElementById('extensionCheckbox').checked = true;
+    } else {
+      document.getElementById('extensionCheckbox').checked = false;
+    }
+  }
+
   if (extensionCartChange){
     let diff = symmetricDifference(Object.keys(extensionCartChange.newValue), Object.keys(extensionCartChange.oldValue));
     let parent = document.getElementById("list-of-auctions");
 
     for (let diffEle of diff){
       let existingChild = document.getElementById(`${diffEle}`) 
-      console.log(existingChild);
-      //should be true if selected...
       if(existingChild){
         parent.removeChild(existingChild);
       } else {
-        
         let child = document.createElement("li");
         child.id = `${diffEle}`
         child.innerHTML = `${diffEle}...${extensionCartChange.newValue[diffEle][0]}`;
@@ -54,16 +67,16 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 /* HELPER FUNCTIONS */
 function symmetricDifference(newValues, oldValues) {
   let setB = new Set(oldValues);
-  let _difference = new Set(newValues);
+  let difference = new Set(newValues);
 
   for (let elem of setB) {
-      if (_difference.has(elem)) {
-          _difference.delete(elem)
+      if (difference.has(elem)) {
+          difference.delete(elem)
       } else {
-          _difference.add(elem)
+          difference.add(elem)
       }
   }
-  return _difference
+  return difference
 }
 
 

@@ -5,6 +5,23 @@ iframe.id = "salvage-sidebar";
 iframe.src = chrome.extension.getURL("./../sidebar.html");
 document.body.appendChild(iframe);
 
+window.onscroll = function() {(stickySidebar())};
+
+let sticky = iframe.offsetTop;
+
+//in case of refresh page and not at top
+stickySidebar();
+
+// update iframe distance from top on scroll
+function stickySidebar() {
+  if (window.pageYOffset >= sticky) {
+    iframe.style.top = "0px";
+  } else {
+    iframe.style.top = (sticky - window.pageYOffset).toString() + "px";
+  }
+}
+
+
 //switches width of iframe from 0px to XXXpx and vice-versa
 function toggleIframe(){
   if(iframe.className == "salvage-extension-iframe salvage-extension-iframe-off"){
@@ -42,15 +59,38 @@ let buttonEventListener = parent => () => {
 
 
 //updates the extension DOM when action is fired to storage
-
-//use sets to get diff, make changes. or RERENDER all...
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionOpenChange = changes['extensionStatus'];
   let extensionListeningChange = changes['extensionListening'];
   let extensionCartChange = changes['cart'];
 
-  if(extensionOpenChange){ toggleIframe() }
+
+  //if multiple tabs are open, update the 'salvage-extension-selected' for all tabs when a
+  //change is made on one. (can be slow if displaying many results on a page or have many items in cart -> O(n*m))
+  if(extensionCartChange){
+    let parents = document.getElementsByClassName('s-item')
+    let listingTitles = symmetricDifference(Object.keys(extensionCartChange.newValue), Object.keys(extensionCartChange.oldValue));
+
+    for(let parent of parents){
+      for (let listingTitle of listingTitles){
+        let parentTitle = parent.querySelector(".s-item__title")
+        if(!parentTitle){ continue; }
+
+        parentTitle = parentTitle.innerHTML.replace(/ /g, "-");
+
+        if(listingTitle == parentTitle && parent.classList.contains('salvage-extension-selected')){
+          parent.classList.remove('salvage-extension-selected')
+        } else if(listingTitle == parentTitle){
+          parent.classList.add('salvage-extension-selected')
+        }
+      }
+    }
     
+  }
+  //handle extension opening
+  if(extensionOpenChange){ toggleIframe(); }
+    
+  //handle extension activation
   if(extensionListeningChange){
     if(extensionListeningChange.newValue == "on"){
       injectExtensionListeners();
@@ -63,7 +103,22 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 /* HELPER FUNCTIONS */
 
-//function to add the javascript of the extension to the browser's DOM
+function symmetricDifference(newValues, oldValues) {
+  let setB = new Set(oldValues);
+  let difference = new Set(newValues);
+
+  for (let elem of setB) {
+      if (difference.has(elem)) {
+          difference.delete(elem)
+      } else {
+          difference.add(elem)
+      }
+  }
+  return difference
+}
+
+
+//function to add the event listeners of the extension to the browser's DOM
 function injectExtensionListeners(){
   let parents = document.getElementsByClassName("s-item"); //s-item is the class for listings on ebay.
 
@@ -94,23 +149,24 @@ function getPrices(parent){
   let result = [];
   let priceIfActive = parent.querySelector(".s-item__price");
   //if user is looking at sold listings, "priceIfActive" will have a child span with class "POSITIVE [, ITALIC, STRIKETHROUGH]"
-  let priceIfSold = priceIfActive.firstElementChild
+  let priceIfSold = priceIfActive.firstElementChild;
   if (priceIfSold){
     result.push(priceIfSold.innerHTML.slice(1, priceIfSold.length));
     if (priceIfSold.classList.contains("STRIKETHROUGH")){
-      result.push("STRIKETHROUGH")
+      result.push("STRIKETHROUGH");
     } else {result.push("POSITIVE")}
 
   }else{
     result.push(priceIfActive.innerHTML.slice(1,priceIfActive.length));
-    result.push("ACTIVE")
+    result.push("ACTIVE");
   }
   return result
 }
 
 
-
+///////////////////////////
 /* INITIALIZATION SCRIPT */
+///////////////////////////
 
 
 //get the initial state of the extension
@@ -124,21 +180,26 @@ chrome.storage.sync.get(['extensionStatus', 'extensionListening', 'cart'], funct
   if(response['extensionListening'] == 'on'){
     injectExtensionListeners();
   }
+
+  //don't perform costly initialization if cart is empty
+  if(response['cart']){
+    let parents = document.getElementsByClassName('s-item')
+
+    for(let parent of parents){
+      for (let listingTitle in response['cart']){ 
+        let parentTitle = parent.querySelector(".s-item__title")
+        if(!parentTitle){ continue; }
+        parentTitle = parentTitle.innerHTML.replace(/ /g, "-");
+
+        if(listingTitle == parentTitle){
+          parent.classList.add('salvage-extension-selected')
+        }
+      }
+    }
+  }
 });
 
-// When the user scrolls the page, execute stickySidebar
-window.onscroll = function() {(stickySidebar())};
 
-let sticky = iframe.offsetTop;
-//in case of refresh page and not at top
-stickySidebar()
-// update iframe distance from top on scroll
-function stickySidebar() {
-  if (window.pageYOffset >= sticky) {
-    iframe.style.top = "0px";
-  } else {
-    iframe.style.top = (sticky - window.pageYOffset).toString() + "px";
-  }
-}
+
 
 
