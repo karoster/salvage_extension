@@ -70,7 +70,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
   if(extensionCartChange){
     let parents = document.getElementsByClassName('s-item')
     let listingTitles = symmetricDifference(Object.keys(extensionCartChange.newValue), Object.keys(extensionCartChange.oldValue));
-
     for(let parent of parents){
       for (let listingTitle of listingTitles){
         let parentTitle = parent.querySelector(".s-item__title")

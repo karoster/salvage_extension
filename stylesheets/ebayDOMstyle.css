@@ -29,6 +29,8 @@
 
 /*Making the sticky sidebar*/
 #salvage-sidebar {
+    display: flex;
+    justify-content: center;
     overflow: hidden;
     background-color: lightgray;
   }
