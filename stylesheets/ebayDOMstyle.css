@@ -6,9 +6,11 @@
     background-color: rgb(211,211,211) !important;
 }
 
-
+/*Making the sticky iframe*/
 .salvage-extension-iframe{
     background-color: lightgray;
+    overflow: hidden;
+
     height: 100%;
     position: fixed;
     top: 128px;
@@ -25,27 +27,3 @@
 .salvage-extension-iframe-on{
     width: 292px;
 }
-
-
-/*Making the sticky sidebar*/
-#salvage-sidebar {
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    background-color: lightgray;
-  }
-  
-/* salvage-sidebar links */
-#salvage-sidebar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px;
-    text-decoration: none;
-}
-
-  
-  
-/* Add some top padding to the page content to prevent sudden quick movement (as the salvage
-bar gets a new position at the top of the page (position:fixed and top:0)) */

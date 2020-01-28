@@ -1,12 +1,38 @@
 
 
+/*style the sidebar contents */
+#salvage-sidebar{
+    /* text-align: center; */
+}
+
+.sidebar-header{
+    display: flex;
+    align-items: center;
+}
+
+#salvage-sidebar h1{
+    font-size: 18px;
+    padding-top: 5px;
+    margin-top: 5px;
+    /* margin-left: 20px; */
+}
+
+#list-of-auctions{
+    list-style-type: none;
+}
+
+#list-of-auctions li{
+    cursor: pointer;
+}
+
+
 button {
     height: 30px;
     width: 30px;
     outline: none;
 }
 
-/* The switch - the box around the slider */
+/* The switch - (box around the slider) */
 .switch {
     position: relative;
     display: inline-block;
@@ -60,7 +86,7 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
-/* Rounded sliders */
+/* Round slider */
 .slider.round {
     border-radius: 34px;
 }

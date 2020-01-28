@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="./stylesheets/popupStyle.css">
+    <link rel="stylesheet" href="./stylesheets/sidebarStyle.css">
   </head>
   <body id="salvage-sidebar">
-    <h1>Salvage Calculator</h1>
+    <div class="sidebar-header">
+      <div>
+        <h1>Salvage<br/>Calculator</h1>
+      </div>
 
-    <div>
-      <h4>Turn on or Off</h4>
-      <label class="switch">
-        <input id="extensionCheckbox" type="checkbox">
-        <span id="extensionActivateListener" class="slider round"></span>
-      </label>
+      <div>
+        <label class="switch">
+          <input id="extensionCheckbox" type="checkbox">
+          <span id="extensionActivateListener" class="slider round"></span>
+        </label>
+      </div>
     </div>
-    <ul id="list-of-auctions">
 
+    <ul id="list-of-auctions">
     </ul>
-    
 
     <script src="./scripts/sidebar.js"></script>
 

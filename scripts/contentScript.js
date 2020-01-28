@@ -1,7 +1,7 @@
 //install the right sidebar for the extension, and give it 0 width
 let iframe = document.createElement('iframe');
 iframe.className = "salvage-extension-iframe salvage-extension-iframe-off";
-iframe.id = "salvage-sidebar";
+iframe.id = "salvage-iframe";
 iframe.src = chrome.extension.getURL("./../sidebar.html");
 document.body.appendChild(iframe);
 
