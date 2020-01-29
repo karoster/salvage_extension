@@ -25,7 +25,7 @@ chrome.storage.sync.get(['extensionListening', 'cart'], function(response) {
   for(let item in response['cart']){
     let child = document.createElement("li");
     child.id = `${item}`
-    child.innerHTML = `${item.slice(0,20)}...${response['cart'][item][0]}`;
+    child.innerHTML = `${item}: ${response['cart'][item][0]}`;
     child.addEventListener("click", cartItemEventListener);
     parent.appendChild(child);
   }
@@ -72,7 +72,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         let child = document.createElement("li");
 
         child.id = `${diffEle}`;
-        child.innerHTML = `${diffEle.slice(0,20)}...${extensionCartChange.newValue[diffEle][0]}`;
+        child.innerHTML = `${diffEle}: ${extensionCartChange.newValue[diffEle][0]}`;
         child.addEventListener("click", cartItemEventListener);
         parent.appendChild(child);
       } 

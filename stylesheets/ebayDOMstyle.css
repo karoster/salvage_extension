@@ -8,9 +8,8 @@
 
 /*Making the sticky iframe*/
 .salvage-extension-iframe{
-    background-color: lightgray;
+    background-color: #f7f7f7;
     overflow: hidden;
-
     height: 100%;
     position: fixed;
     top: 128px;
@@ -24,6 +23,23 @@
     width: 0px;
 }
 
-.salvage-extension-iframe-on{
-    width: 292px;
+@media only screen and (min-width: 1280px){
+    .salvage-extension-iframe-on{
+        width: -webkit-calc(397px - 205px);
+        width: calc(397px - 205px);
+    }    
+}
+
+@media only screen and (min-width: 1490px){
+    .salvage-extension-iframe-on{
+        width: -webkit-calc((100% - 1093px)/2);
+        width: calc((100% - 1108px)/2);
+    }    
+}
+
+@media only screen and (max-width: 1280px){
+    .salvage-extension-iframe-on{
+        width: 0px;
+        /* width: calc(397px - 230px); */
+    }    
 }

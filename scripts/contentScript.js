@@ -42,7 +42,7 @@ let buttonEventListener = parent => () => {
     //using title as key is space efficient, and almost always unique
     //runs into problems if two listings have exactly identical titles (unlikely for app purpose)
 
-    let titleKey = parent.querySelector(".s-item__title").innerHTML.replace(/ /g, "-")
+    let titleKey = parent.querySelector(".s-item__title").innerHTML//.replace(/ /g, "-")
     if(parent.classList.contains("salvage-extension-selected")){
       delete response['cart'][titleKey]
       chrome.storage.sync.set({cart: response['cart']}, function() {
@@ -75,7 +75,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         let parentTitle = parent.querySelector(".s-item__title")
         if(!parentTitle){ continue; }
 
-        parentTitle = parentTitle.innerHTML.replace(/ /g, "-");
+        parentTitle = parentTitle.innerHTML//.replace(/ /g, "-");
 
         if(listingTitle == parentTitle && parent.classList.contains('salvage-extension-selected')){
           parent.classList.remove('salvage-extension-selected')
@@ -188,7 +188,7 @@ chrome.storage.sync.get(['extensionStatus', 'extensionListening', 'cart'], funct
       for (let listingTitle in response['cart']){ 
         let parentTitle = parent.querySelector(".s-item__title")
         if(!parentTitle){ continue; }
-        parentTitle = parentTitle.innerHTML.replace(/ /g, "-");
+        parentTitle = parentTitle.innerHTML//.replace(/ /g, "-");
 
         if(listingTitle == parentTitle){
           parent.classList.add('salvage-extension-selected')

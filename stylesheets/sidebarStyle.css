@@ -7,24 +7,36 @@
 
 .sidebar-header{
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    /* align-items: center; */
 }
 
 #salvage-sidebar h1{
-    font-size: 18px;
-    padding-top: 5px;
+    margin-left: 10px;
+    font-size: 20px;
+    /* padding-top: 5px; */
     margin-top: 5px;
-    /* margin-left: 20px; */
 }
 
 #list-of-auctions{
+    width: 100%;
     list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
+    /* background: red; */
 }
 
 #list-of-auctions li{
+    /* margin-left: 0px;
+    padding-left: 0px; */
+    width: 100%;
+    margin-top: 5px;
     cursor: pointer;
 }
 
+#list-of-auctions li:nth-child(2n+1){
+    background-color: lightgray;
+}
 
 button {
     height: 30px;
@@ -34,6 +46,7 @@ button {
 
 /* The switch - (box around the slider) */
 .switch {
+    margin: 10px;
     position: relative;
     display: inline-block;
     width: 60px;
