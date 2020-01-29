@@ -9,7 +9,7 @@ window.onscroll = function() {(stickySidebar())};
 
 let sticky = iframe.offsetTop;
 
-//in case of refresh page and not at top
+//in case of refreshed page and not loading at top of page
 stickySidebar();
 
 // update iframe distance from top on scroll
@@ -38,20 +38,30 @@ function toggleIframe(){
 
 //event listener to install on each listing's button.
 let buttonEventListener = parent => () => {
-  chrome.storage.sync.get(['cart'], function(response) {
+  chrome.storage.sync.get(['cart', 'total'], function(response) {
     //using title as key is space efficient, and almost always unique
     //runs into problems if two listings have exactly identical titles (unlikely for app purpose)
 
     let titleKey = parent.querySelector(".s-item__title").innerHTML//.replace(/ /g, "-")
     if(parent.classList.contains("salvage-extension-selected")){
+
+      let price = response['cart'][titleKey][0];
       delete response['cart'][titleKey]
-      chrome.storage.sync.set({cart: response['cart']}, function() {
-        parent.classList.remove("salvage-extension-selected");
+
+      chrome.storage.sync.set({cart: response['cart'],
+        total: response['total'] - parseFloat(price.replace(/,/g, ""))},
+        function() {
+          parent.classList.remove("salvage-extension-selected");
       });
+
     }else{
-      response['cart'][titleKey] = getPrices(parent)
-      chrome.storage.sync.set({cart: response['cart']}, function() {
-        parent.classList.add("salvage-extension-selected");
+      let priceArr = getPrices(parent);
+      response['cart'][titleKey] = priceArr;
+
+      chrome.storage.sync.set({cart: response['cart'],
+        total: response['total'] + parseFloat(priceArr[0].replace(/,/g, ""))},
+        function() {
+          parent.classList.add("salvage-extension-selected");
       });
     }
   });
@@ -75,7 +85,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         let parentTitle = parent.querySelector(".s-item__title")
         if(!parentTitle){ continue; }
 
-        parentTitle = parentTitle.innerHTML//.replace(/ /g, "-");
+        parentTitle = parentTitle.innerHTML;
 
         if(listingTitle == parentTitle && parent.classList.contains('salvage-extension-selected')){
           parent.classList.remove('salvage-extension-selected')
@@ -100,7 +110,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 });
 
+
+//////////////////////
 /* HELPER FUNCTIONS */
+//////////////////////
 
 function symmetricDifference(newValues, oldValues) {
   let setB = new Set(oldValues);
@@ -167,7 +180,6 @@ function getPrices(parent){
 /* INITIALIZATION SCRIPT */
 ///////////////////////////
 
-
 //get the initial state of the extension
 //(i.e. add extension iframe and event listeners on page refresh if extension is originally open and on)
 chrome.storage.sync.get(['extensionStatus', 'extensionListening', 'cart'], function(response) {
@@ -188,7 +200,7 @@ chrome.storage.sync.get(['extensionStatus', 'extensionListening', 'cart'], funct
       for (let listingTitle in response['cart']){ 
         let parentTitle = parent.querySelector(".s-item__title")
         if(!parentTitle){ continue; }
-        parentTitle = parentTitle.innerHTML//.replace(/ /g, "-");
+        parentTitle = parentTitle.innerHTML;
 
         if(listingTitle == parentTitle){
           parent.classList.add('salvage-extension-selected')

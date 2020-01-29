@@ -2,19 +2,16 @@
 
 /*style the sidebar contents */
 #salvage-sidebar{
-    /* text-align: center; */
 }
 
 .sidebar-header{
     display: flex;
     justify-content: space-between;
-    /* align-items: center; */
 }
 
 #salvage-sidebar h1{
     margin-left: 10px;
     font-size: 20px;
-    /* padding-top: 5px; */
     margin-top: 5px;
 }
 
@@ -23,12 +20,10 @@
     list-style-type: none;
     margin-left: 0px;
     padding-left: 0px;
-    /* background: red; */
 }
 
 #list-of-auctions li{
-    /* margin-left: 0px;
-    padding-left: 0px; */
+    padding-left: 0px;
     width: 100%;
     margin-top: 5px;
     cursor: pointer;
@@ -86,11 +81,11 @@ button {
 }
 
 input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #3665f3;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #3665f3;
 }
 
 input:checked + .slider:before {
@@ -107,3 +102,7 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+
+
+/*Responsive extension*/

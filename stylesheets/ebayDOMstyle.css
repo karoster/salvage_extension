@@ -6,7 +6,6 @@
     background-color: rgb(211,211,211) !important;
 }
 
-/*Making the sticky iframe*/
 .salvage-extension-iframe{
     background-color: #f7f7f7;
     overflow: hidden;
@@ -23,6 +22,12 @@
     width: 0px;
 }
 
+@media only screen and (max-width: 1280px){
+    .salvage-extension-iframe-on{
+        width: 0px;
+    }    
+}
+
 @media only screen and (min-width: 1280px){
     .salvage-extension-iframe-on{
         width: -webkit-calc(397px - 205px);
@@ -30,16 +35,12 @@
     }    
 }
 
+/* at viewport > 1490 px middle content section of ebay stops expanding (middle content width of ~1093px).
+    Take advantage of the free space on the right side.*/
 @media only screen and (min-width: 1490px){
     .salvage-extension-iframe-on{
-        width: -webkit-calc((100% - 1093px)/2);
+        width: -webkit-calc((100% - 1108px)/2);
         width: calc((100% - 1108px)/2);
     }    
 }
 
-@media only screen and (max-width: 1280px){
-    .salvage-extension-iframe-on{
-        width: 0px;
-        /* width: calc(397px - 230px); */
-    }    
-}

@@ -4,18 +4,24 @@ let extensionActivate = document.getElementById('extensionActivateListener')
 //removes the 'li' from the sidebar and removes the item from the extensions storage['cart']
 function cartItemEventListener(event){
   let titleKey = event.target.id;
-  let parent = event.target.parentNode;
 
-  chrome.storage.sync.get(['cart'], function(response) {
-    delete response['cart'][titleKey]
-    chrome.storage.sync.set({ 'cart':response['cart'] });
+  chrome.storage.sync.get(['cart', 'total'], function(response) {
+    let price = response['cart'][titleKey][0];
+    delete response['cart'][titleKey];
+
+    chrome.storage.sync.set({ 
+      'cart': response['cart'],
+      'total': response['total'] - parseFloat(price.replace(/,/g, ""))
+    });
+
   });
+  
 }
 
 
 
 //flip the extension toggle switch to be consistent with initial listening state (aesthetic)
-chrome.storage.sync.get(['extensionListening', 'cart'], function(response) {
+chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(response) {
 
   if (response['extensionListening'] == 'on'){
     document.getElementById("extensionCheckbox").checked = true;
@@ -25,10 +31,16 @@ chrome.storage.sync.get(['extensionListening', 'cart'], function(response) {
   for(let item in response['cart']){
     let child = document.createElement("li");
     child.id = `${item}`
-    child.innerHTML = `${item}: ${response['cart'][item][0]}`;
+    child.innerHTML = `${item}: <strong>${response['cart'][item][0]}</strong>`;
     child.addEventListener("click", cartItemEventListener);
     parent.appendChild(child);
   }
+
+  let totalDiv = document.createElement('div');
+  totalDiv.id = "cart-total";
+  totalDiv.innerHTML = `Total: <strong>${response['total']}</strong>`;
+  document.getElementById('salvage-sidebar').appendChild(totalDiv);
+
 });
 
 //turn extensions state of listeners on and off
@@ -38,7 +50,7 @@ extensionActivate.onclick = function(element){
     if (response['extensionListening'] == 'off'){
       chrome.storage.sync.set({'extensionListening':'on'});
     } else {
-      chrome.storage.sync.set({'extensionListening':'off', 'cart':{}});
+      chrome.storage.sync.set({'extensionListening':'off', 'cart':{}, 'total': 0});
     }
   });
 }
@@ -47,6 +59,7 @@ extensionActivate.onclick = function(element){
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionCartChange = changes['cart'];
   let extensionListeningChange = changes['extensionListening'];
+  let extensionTotalChange = changes['total']
 
   if(extensionListeningChange){
     if(extensionListeningChange.newValue == "on"){
@@ -72,11 +85,19 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         let child = document.createElement("li");
 
         child.id = `${diffEle}`;
-        child.innerHTML = `${diffEle}: ${extensionCartChange.newValue[diffEle][0]}`;
+        child.innerHTML = `${diffEle}: <strong>${extensionCartChange.newValue[diffEle][0]}</strong>`;
         child.addEventListener("click", cartItemEventListener);
         parent.appendChild(child);
       } 
     }
+  }
+
+  if(extensionTotalChange){
+    let totalDiv = document.getElementById('cart-total');
+    let displayTotal = extensionTotalChange.newValue.toFixed(2);
+    
+    totalDiv.innerHTML = `Total: <strong>${numberWithCommas(displayTotal)}</strong>`;
+
   }
 });
 
@@ -98,4 +119,6 @@ function symmetricDifference(newValues, oldValues) {
   return difference
 }
 
-
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
