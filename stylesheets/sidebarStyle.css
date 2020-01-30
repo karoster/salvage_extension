@@ -1,6 +1,4 @@
 
-
-
 .sidebar-header{
     display: flex;
     justify-content: space-between;
@@ -33,6 +31,17 @@
 
 #list-of-auctions li:nth-child(2n+1){
     background-color: lightgray;
+}
+
+.STRIKETHROUGH{
+    color: #57ad10;
+    text-decoration: line-through;
+
+}
+
+
+.POSITIVE{
+    color: #57ad10;
 }
 
 #clear-button{

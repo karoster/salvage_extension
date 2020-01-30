@@ -14,7 +14,7 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
   for(let item in response['cart']){
     let child = document.createElement("li");
     child.id = `${item}`
-    child.innerHTML = `${item}: <strong>$${response['cart'][item][0]}</strong>`;
+    child.innerHTML = `${item}: <strong class=${response['cart'][item][1]}>$${response['cart'][item][0]}</strong>`;
     child.addEventListener("click", cartItemEventListener);
     parent.appendChild(child);
   }
@@ -76,7 +76,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         let child = document.createElement("li");
 
         child.id = `${diffEle}`;
-        child.innerHTML = `${diffEle}: <strong>$${extensionCartChange.newValue[diffEle][0]}</strong>`;
+        child.innerHTML = `${diffEle}: <strong class=${extensionCartChange.newValue[diffEle][1]}>$${extensionCartChange.newValue[diffEle][0]}</strong>`;
         child.addEventListener("click", cartItemEventListener);
         parent.appendChild(child);
       }
@@ -109,6 +109,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 function clearCart(event){
   chrome.storage.sync.set({'cart': {}, 'total': 0});
+}
+
+function hoverCartItem(event){
+
 }
 
 function saveCart(event){
@@ -157,6 +161,8 @@ function symmetricDifference(newValues, oldValues) {
   return difference
 }
 
+
+//rewrites a float as a number with commas for displaying.
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
