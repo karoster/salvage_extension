@@ -1,8 +1,5 @@
 
 
-/*style the sidebar contents */
-#salvage-sidebar{
-}
 
 .sidebar-header{
     display: flex;
@@ -10,9 +7,9 @@
 }
 
 #salvage-sidebar h1{
-    margin-left: 10px;
-    font-size: 20px;
-    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 24px;
+    margin-top: 10px;
 }
 
 #list-of-auctions{
@@ -29,19 +26,21 @@
     cursor: pointer;
 }
 
+#cart-total{
+    margin: 10px;
+    margin-left: 5px;
+}
+
 #list-of-auctions li:nth-child(2n+1){
     background-color: lightgray;
 }
 
-button {
-    height: 30px;
-    width: 30px;
-    outline: none;
+#clear-button{
+    width: 100%;
 }
-
 /* The switch - (box around the slider) */
 .switch {
-    margin: 10px;
+    margin: 10px 5px;
     position: relative;
     display: inline-block;
     width: 60px;
@@ -96,13 +95,10 @@ input:checked + .slider:before {
 
 /* Round slider */
 .slider.round {
-    border-radius: 34px;
+    border-radius: 28px;
 }
 
 .slider.round:before {
     border-radius: 50%;
 }
 
-
-
-/*Responsive extension*/

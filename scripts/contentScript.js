@@ -209,8 +209,3 @@ chrome.storage.sync.get(['extensionStatus', 'extensionListening', 'cart'], funct
     }
   }
 });
-
-
-
-
-
