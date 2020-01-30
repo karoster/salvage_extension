@@ -42,7 +42,7 @@ let buttonEventListener = parent => () => {
     //using title as key is space efficient, and almost always unique
     //runs into problems if two listings have exactly identical titles (unlikely for app purpose)
 
-    let titleKey = parent.querySelector(".s-item__title").innerHTML//.replace(/ /g, "-")
+    let titleKey = parent.querySelector(".s-item__title").innerHTML
     if(parent.classList.contains("salvage-extension-selected")){
 
       let price = response['cart'][titleKey][0];
@@ -136,7 +136,7 @@ function injectExtensionListeners(){
 
   for (let parent of parents) {
     let button = document.createElement("button");
-    button.innerHTML = "BUTTON";
+    button.innerHTML = "Add To Part Total";
     button.className = "toggleCartButton";
     button.addEventListener("click", buttonEventListener(parent), false);
 

@@ -39,14 +39,27 @@
 
 }
 
-
 .POSITIVE{
     color: #57ad10;
 }
 
 #clear-button{
+    border-radius:5px;
+	display:inline-block;
+	cursor:pointer;
+	text-decoration:none;
     width: 100%;
+    margin: auto;
+    background-color: transparent;
+    border: 1px solid #0654ba;
+    color: #0654ba;
 }
+
+#clear-button:active{
+    position:relative;
+    top: 1px;
+}
+
 /* The switch - (box around the slider) */
 .switch {
     margin: 10px 5px;

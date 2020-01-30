@@ -1,3 +1,21 @@
+.toggleCartButton{
+	border-radius:5px;
+	display:inline-block;
+	cursor:pointer;
+	text-decoration:none;
+    width: 100%;
+    margin: auto;
+    background-color: transparent;
+    border: 1px solid #0654ba;
+    color: #0654ba;
+}
+
+.toggleCartButton:active {
+	position:relative;
+	top: 1px;
+}
+
+
 .salvage-extension-selected{
     background-color: rgb(211,211,211) !important;
 }

@@ -24,11 +24,12 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
   totalDiv.innerHTML = `Total: <strong>$${response['total'].toFixed(2)}</strong>`;
   document.getElementById('salvage-sidebar').appendChild(totalDiv);
 
-  if(response['cart']){
+  //if cart has objects, insert clear button.
+  if(Object.keys(response['cart']).length){
     let clearButton = document.createElement('button');
     clearButton.id = "clear-button";
     clearButton.addEventListener("click", clearCart);
-    clearButton.innerHTML = "clear";
+    clearButton.innerHTML = "Clear";
     document.getElementById("salvage-sidebar").appendChild(clearButton);
   }
 
@@ -87,7 +88,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     if(Object.keys(extensionCartChange.newValue).length && clearButton===null){
       clearButton = document.createElement('button');
       clearButton.id = 'clear-button';
-      clearButton.innerHTML = "clear";
+      clearButton.innerHTML = "Clear";
       clearButton.addEventListener('click', clearCart);
       document.getElementById('salvage-sidebar').appendChild(clearButton);
     //cart does not have items, but there is a clear button -> remove it
@@ -128,8 +129,7 @@ function saveCart(event){
 //event listener to add to the 'li' in the sidebar.
 //removes the 'li' from the sidebar and removes the item from the extensions storage['cart']
 function cartItemEventListener(event){
-  let titleKey = event.target.id;
-
+  let titleKey = event.currentTarget.id;
   chrome.storage.sync.get(['cart', 'total'], function(response) {
     let price = response['cart'][titleKey][0];
     delete response['cart'][titleKey];
