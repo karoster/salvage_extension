@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_16_202720) do
+ActiveRecord::Schema.define(version: 2020_01_31_022623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(version: 2020_01_16_202720) do
     t.string "model", null: false
     t.string "submodel"
     t.index ["year", "make", "model"], name: "index_motorcycles_on_year_and_make_and_model", unique: true
+  end
+
+  create_table "parts", force: :cascade do |t|
+    t.string "cart_id", null: false
+    t.text "part_id", null: false
+    t.string "sale_type", null: false
+    t.string "sale_price", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["cart_id"], name: "index_parts_on_cart_id", unique: true
   end
 
 end
