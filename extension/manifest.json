@@ -2,7 +2,7 @@
     "name": "Salvage Calculator",
     "version": "1.0",
     "description": "Figure out the upper bound for paying for a salvage title",
-    "permissions": ["activeTab", "declarativeContent","storage"],
+    "permissions": ["activeTab", "declarativeContent", "storage", "http://*/", "https://*/"],
     "background": {
         "scripts": ["./scripts/background.js"],
         "persistent": false

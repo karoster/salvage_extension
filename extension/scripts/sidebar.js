@@ -127,16 +127,33 @@ function saveCart(event){
   chrome.storage.sync.get(['cart'], function(response){
     //make api post call to server to make db insertion and post
     //return a unique key to display that can be used to gather the data.
-    postData = []
-    for(let item in response['cart']){
-      console.log(item)
-      postData.push({part_id: item,
-        sale_type: response['cart'][item][1],
-        sale_price: response['cart'][item][0] 
-      });
-    }
-    console.log(postData)
+    let postData = getPostData(response['cart']);
+    let url = "http://localhost:3000/api/v1/parts"
+    fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // redirect: 'follow', // manual, *follow, error
+      // referrerPolicy: 'no-referrer', // no-referrer, *client
+      body: JSON.stringify({'parts': postData}) // body data type must match "Content-Type" header
+    });
+
   });
+}
+
+function getPostData(object){
+  returnList = [];
+  for(let item in object){
+    returnList.push({part_id: item,
+      sale_type: object[item][1],
+      sale_price: object[item][0] 
+    });
+  }
+  return returnList
 }
 
 //turn extensions state of listeners on and off

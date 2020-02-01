@@ -4,13 +4,14 @@ class Api::V1::PartsController < ApplicationController
 
     def index
       print(params)
+      print(debug(params))
       print(query_params)
       part_list = Part.where(query_params)
       render json: part_list
     end
 
     def create
-
+      print(params)
     end
   
   
@@ -23,7 +24,7 @@ class Api::V1::PartsController < ApplicationController
 
     # for post request
     def part_params
-      params..permit({parts: [:part_id, :sale_type, :sale_price]})
+      params.permit({parts: [:part_id, :sale_type, :sale_price]})
     end
   end
   
