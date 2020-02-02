@@ -1,5 +1,7 @@
-let extensionActivate = document.getElementById('extensionActivateListener')
 
+///////////////////////////
+/* INITIALIZATION SCRIPT */
+///////////////////////////
 
 //get the initial state of the extension
 chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(response) {
@@ -43,7 +45,9 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
 
 });
 
-
+///////////////////////////
+/* DYNAMIC UPDATE SCRIPT */
+///////////////////////////
 
 //track changes to cart and on/off extension listening
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -83,8 +87,11 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
     let clearButton = document.getElementById('clear-button');
     let saveButton = document.getElementById('save-button')
-    //cart has items, but there is no clear button -> add it
-    if(Object.keys(extensionCartChange.newValue).length && clearButton===null){
+    //cart has items, but there is no save button -> add it
+    if(Object.keys(extensionCartChange.newValue).length && saveButton===null){
+      //handle case where cart is saved, causing removal of saveButton preventing double clearButton
+      // if(clearButton){ clearButton.parentNode.removeChild(clearButton)}
+
       let newClearButton = document.createElement('button');
       let newSaveButton = document.createElement('button');
       let parent = document.getElementById("salvage-sidebar");
@@ -99,8 +106,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
       parent.appendChild(newClearButton);
       parent.appendChild(newSaveButton);
 
-    //cart does not have items, but there is a clear button -> remove it
-    } else if (!Object.keys(extensionCartChange.newValue).length && clearButton){
+    //cart does not have items, but there is a save button -> remove it
+    } else if (!Object.keys(extensionCartChange.newValue).length && saveButton){
       clearButton.parentNode.removeChild(clearButton);
       saveButton.parentNode.removeChild(saveButton);
     }
@@ -114,93 +121,3 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
   }
 });
-
-//////////////////////
-/* HELPER FUNCTIONS */
-//////////////////////
-
-function clearCart(event){
-  chrome.storage.sync.set({'cart': {}, 'total': 0});
-}
-
-function saveCart(event){
-  chrome.storage.sync.get(['cart'], function(response){
-    //make api post call to server to make db insertion and post
-    //return a unique key to display that can be used to gather the data.
-    let postData = getPostData(response['cart']);
-    let url = "http://localhost:3000/api/v1/parts"
-    fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      // credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      // redirect: 'follow', // manual, *follow, error
-      // referrerPolicy: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify({'parts': postData}) // body data type must match "Content-Type" header
-    });
-
-  });
-}
-
-function getPostData(object){
-  returnList = [];
-  for(let item in object){
-    returnList.push({part_id: item,
-      sale_type: object[item][1],
-      sale_price: object[item][0] 
-    });
-  }
-  return returnList
-}
-
-//turn extensions state of listeners on and off
-extensionActivate.onclick = function(element){
-  chrome.storage.sync.get(['extensionListening'], function(response) {
-    
-    if (response['extensionListening'] == 'off'){
-      chrome.storage.sync.set({'extensionListening':'on'});
-    } else {
-      chrome.storage.sync.set({'extensionListening':'off', 'cart':{}, 'total': 0});
-    }
-  });
-}
-
-//event listener to add to the 'li' in the sidebar.
-//removes the 'li' from the sidebar and removes the item from the extensions storage['cart']
-function cartItemEventListener(event){
-  let titleKey = event.currentTarget.id;
-  chrome.storage.sync.get(['cart', 'total'], function(response) {
-    let price = response['cart'][titleKey][0];
-    delete response['cart'][titleKey];
-
-    chrome.storage.sync.set({ 
-      'cart': response['cart'],
-      'total': response['total'] - parseFloat(price.replace(/,/g, ""))
-    });
-
-  });
-}
-
-//this function returns all elements in newValues not in oldValues unioned with
-//all elements in oldValues not in newValues (symmetric difference)
-function symmetricDifference(newValues, oldValues) {
-  let setB = new Set(oldValues);
-  let difference = new Set(newValues);
-
-  for (let elem of setB) {
-    if (difference.has(elem)) {
-        difference.delete(elem);
-    } else {
-        difference.add(elem);
-    }
-  }
-  return difference
-}
-
-//rewrites a float as a number with commas for displaying.
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
