@@ -44,6 +44,11 @@ function clearCart(event){
     });
 }
 
+function loadCart(event){
+    event.preventDefault;
+    
+}
+
 
 function cartItemEventListener(event){
     let titleKey = event.currentTarget.id;

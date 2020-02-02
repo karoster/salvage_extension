@@ -10,9 +10,8 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
     document.getElementById("extensionCheckbox").checked = true;
   }
 
-
-
   let parentUl = document.getElementById("list-of-auctions");
+
   for(let item in response['cart']){
     let child = document.createElement("li");
     child.id = `${item}`
@@ -20,17 +19,18 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
     child.addEventListener("click", cartItemEventListener);
     parentUl.appendChild(child);
   }
-  //add total div to sidebar
+  // //add total div to sidebar
   let totalDiv = document.createElement('div');
   totalDiv.id = "cart-total";
   totalDiv.innerHTML = `Total: <strong>$${response['total'].toFixed(2)}</strong>`;
-  document.getElementById('salvage-sidebar').appendChild(totalDiv);
+  parentUl.after(totalDiv);
 
   //if cart has objects, insert clear button and save button.
   if(Object.keys(response['cart']).length){
     let saveButton = document.createElement('button');
     let clearButton = document.createElement('button');
-    let sidebar = document.getElementById("salvage-sidebar");
+    // let sidebar = document.getElementById("salvage-sidebar");
+
     clearButton.classList.add("sidebar-button");
     saveButton.classList.add("sidebar-button");
     clearButton.addEventListener("click", clearCart);
@@ -39,8 +39,8 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
     clearButton.innerHTML = "Clear";
     saveButton.id = "save-button";
     clearButton.id = "clear-button";
-    sidebar.appendChild(clearButton);
-    sidebar.appendChild(saveButton);
+    totalDiv.after(clearButton);
+    totalDiv.after(saveButton);
   }
 
 });
@@ -54,6 +54,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
   let extensionCartChange = changes['cart'];
   let extensionListeningChange = changes['extensionListening'];
   let extensionTotalChange = changes['total']
+  let totalDiv = document.getElementById('cart-total');
+
+
   //toggle extensio listening
   if(extensionListeningChange){
     if(extensionListeningChange.newValue == "on"){
@@ -62,6 +65,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
       document.getElementById('extensionCheckbox').checked = false;
     }
   }
+
 
   if (extensionCartChange){
     let diff = symmetricDifference(Object.keys(extensionCartChange.newValue), Object.keys(extensionCartChange.oldValue));
@@ -87,6 +91,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
     let clearButton = document.getElementById('clear-button');
     let saveButton = document.getElementById('save-button')
+
     //cart has items, but there is no save button -> add it
     if(Object.keys(extensionCartChange.newValue).length && saveButton===null){
       //handle case where cart is saved, causing removal of saveButton preventing double clearButton
@@ -94,7 +99,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
       let newClearButton = document.createElement('button');
       let newSaveButton = document.createElement('button');
-      let parent = document.getElementById("salvage-sidebar");
+      // let parent = document.getElementById("salvage-sidebar");
       newClearButton.classList.add('sidebar-button');
       newSaveButton.classList.add('sidebar-button');
       newClearButton.id = "clear-button";
@@ -103,8 +108,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
       newSaveButton.innerHTML = "Save";
       newClearButton.addEventListener('click', clearCart);
       newSaveButton.addEventListener('click', saveCart);
-      parent.appendChild(newClearButton);
-      parent.appendChild(newSaveButton);
+      totalDiv.after(newClearButton);
+      totalDiv.after(newSaveButton);
 
     //cart does not have items, but there is a save button -> remove it
     } else if (!Object.keys(extensionCartChange.newValue).length && saveButton){
@@ -114,9 +119,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
   }
 
   if(extensionTotalChange){
-    let totalDiv = document.getElementById('cart-total');
     let displayTotal = extensionTotalChange.newValue.toFixed(2);
-    
     totalDiv.innerHTML = `Total: <strong>$${numberWithCommas(displayTotal)}</strong>`;
 
   }

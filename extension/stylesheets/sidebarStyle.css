@@ -1,3 +1,10 @@
+html{
+    height: 100%;
+}
+
+.content{
+    min-height: calc(95vh - 60px);
+}
 
 .sidebar-header{
     display: flex;
@@ -24,13 +31,14 @@
     cursor: pointer;
 }
 
-#cart-total{
-    margin: 10px;
-    margin-left: 5px;
-}
 
 #list-of-auctions li:nth-child(2n+1){
     background-color: lightgray;
+}
+
+#cart-total{
+    margin: 10px;
+    margin-left: 5px;
 }
 
 .STRIKETHROUGH{
@@ -43,6 +51,23 @@
     color: #57ad10;
 }
 
+
+/* load cart input */
+
+.footer{
+    height: 40px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+input[type=text]{
+    border: 1px solid black;
+    width: calc(100% - 2px);
+    margin: auto;
+}
+
+
+/*Save, Load, Clear extension butons*/
 .sidebar-button{
     border-radius:5px;
 	display:inline-block;
@@ -60,6 +85,11 @@
     position:relative;
     top: 1px;
 }
+
+
+/*/////////////////////
+EXTENSION ON/OFF SLIDER
+/////////////////////*/
 
 /* The switch - (box around the slider) */
 .switch {
@@ -125,8 +155,9 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-
+/*///////////////*/
 /*save cart modal*/
+/*///////////////*/
 
 .modal {
     display: none; 

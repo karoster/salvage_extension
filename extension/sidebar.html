@@ -4,23 +4,35 @@
     <link rel="stylesheet" href="./stylesheets/sidebarStyle.css">
   </head>
   <body id="salvage-sidebar">
-    <div class="sidebar-header">
-      <div>
-        <h1>Parts Pal</h1>
+    <div class="content">
+
+      <div class="sidebar-header">
+
+        <div>
+          <h1>Parts Pal</h1>
+        </div>
+
+        <div>
+          <label class="switch">
+            <input id="extensionCheckbox" type="checkbox">
+            <span id="extensionActivateListener" class="slider round"></span>
+          </label>
+        </div>
+
       </div>
 
-      <div>
-        <label class="switch">
-          <input id="extensionCheckbox" type="checkbox">
-          <span id="extensionActivateListener" class="slider round"></span>
-        </label>
-      </div>
+      <ul id="list-of-auctions">
+      </ul>
+
     </div>
 
-    
-
-    <ul id="list-of-auctions">
-    </ul>
+    <footer class="footer">
+      <form id="load-cart-form" action="GET">
+        <label for="load-input">Load a Previous Cart:</label>
+        <input type="text" placeholder="Enter a Cart Key">
+        <input type="submit" value="Load" class="sidebar-button">
+      </form>
+    </footer>  
 
     
     <div id="sidebar-save-modal" class="modal">
