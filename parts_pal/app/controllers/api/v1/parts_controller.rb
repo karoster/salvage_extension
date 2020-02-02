@@ -3,10 +3,19 @@ class Api::V1::PartsController < ApplicationController
 
 
     def index
-      print(params)
-      print(query_params)
-      part_list = Part.where(query_params)
-      render json: part_list
+      cart_object = {}
+      total = 0
+      part_list = Part.where(query_params).pluck(:part_id, :sale_price, :sale_type)
+      part_list.each do |id, sp, st|
+        total += sp.to_f
+        cart_object[id] = [sp, st]
+      end
+
+      if part_list.length() > 0
+        render json: {parts: cart_object, total: total,  error: false}
+      else
+        render json: {error: true}
+      end
     end
 
     def create
@@ -16,6 +25,7 @@ class Api::V1::PartsController < ApplicationController
         Part.transaction do 
           part_params['part'].each do |part|
             part['cart_id'] = cart_id
+            Part.create!(part)
           end
         end
       rescue StandardError => e
@@ -24,7 +34,6 @@ class Api::V1::PartsController < ApplicationController
       end
 
       render json: {message: "#{cart_id}", error: false}
-
 
     end
   

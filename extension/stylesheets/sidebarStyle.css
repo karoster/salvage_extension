@@ -66,6 +66,10 @@ input[type=text]{
     margin: auto;
 }
 
+.error-span{
+    color: #E53238;
+}
+
 
 /*Save, Load, Clear extension butons*/
 .sidebar-button{
