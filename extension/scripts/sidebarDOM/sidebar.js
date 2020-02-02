@@ -8,6 +8,14 @@ chrome.storage.sync.get(['extensionListening', 'cart', 'total'], function(respon
 
   if (response['extensionListening'] == 'on'){
     document.getElementById("extensionCheckbox").checked = true;
+    document.getElementById('load-input').disabled = false;
+    document.getElementById('load-submit').disabled = false;
+
+  } else{
+    document.getElementById('load-input').disabled = true;
+    document.getElementById('load-submit').disabled = true;
+
+
   }
 
   let parentUl = document.getElementById("list-of-auctions");
@@ -57,12 +65,18 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
   let totalDiv = document.getElementById('cart-total');
 
 
-  //toggle extensio listening
+  //toggle extension listening
   if(extensionListeningChange){
     if(extensionListeningChange.newValue == "on"){
       document.getElementById('extensionCheckbox').checked = true;
+      document.getElementById('load-input').disabled = false;
+      document.getElementById('load-submit').disabled = false;
+
     } else {
       document.getElementById('extensionCheckbox').checked = false;
+      document.getElementById('load-input').disabled = true;
+      document.getElementById('load-submit').disabled = true;
+
     }
   }
 
