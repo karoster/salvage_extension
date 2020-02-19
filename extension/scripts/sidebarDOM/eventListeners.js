@@ -3,7 +3,8 @@ function saveCart(event){
     //make api post call to server to make db insertion and post
     //return a unique key to display that can be used to gather the data.
     let postData = getPostData(response['cart']);
-    let url = "http://localhost:3000/api/v1/parts"
+    event.target.disabled = true;
+    let url = "https://floating-escarpment-36391.herokuapp.com/api/v1/parts"
     fetch(url, {
       method: 'POST', 
       mode: 'cors', 
@@ -26,11 +27,12 @@ function saveCart(event){
           currentKey.innerHTML = `<strong>${response['message']}</strong>`
           modalContent.appendChild(currentKey);
           saveModal.style.display = 'block';
-          saveButton.parentNode.removeChild(saveButton); // need to fix this...
+          saveButton.parentNode.removeChild(saveButton);
 
         }
       }).catch(err => {console.log(err);
         console.log("failed to process save")
+        event.target.disabled = false;
       });
   });
 }
@@ -50,10 +52,9 @@ function loadCart(event){
   if(errorMsg){ errorMsg.parentNode.removeChild(errorMsg) }
 
   event.preventDefault();
-  let url = "http://localhost:3000/api/v1/parts"
+  let url = "https://floating-escarpment-36391.herokuapp.com/api/v1/parts"
   let cartInput = document.getElementById('load-input');
   url += `?cart_id=${cartInput.value}`
-  console.log(url)
   fetch(url)
     .then(response => response.json())
     .then(response => {
@@ -64,7 +65,6 @@ function loadCart(event){
         errorSpan.innerText = "Invalid load key";
         cartInput.after(errorSpan)
       } else {
-        console.log(response['parts'])
         chrome.storage.sync.set({'cart': response['parts'], 'total': response['total']});
       }
       cartInput.value = ""

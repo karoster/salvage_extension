@@ -9,8 +9,4 @@ closeModal.onclick = function() {
   saveModal.style.display = "none";
 }
 
-window.onclick = function(event) {
-  if (event.target == saveModal) {
-    saveModal.style.display = "none";
-  }
-}
+

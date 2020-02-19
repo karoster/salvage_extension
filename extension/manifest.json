@@ -1,7 +1,7 @@
 {
-    "name": "Salvage Calculator",
+    "name": "Parts Pal",
     "version": "1.0",
-    "description": "Figure out the upper bound for paying for a salvage title",
+    "description": "Find an upper bound on what to pay when buying a salvage title",
     "permissions": ["activeTab", "declarativeContent", "storage", "http://*/", "https://*/"],
     "background": {
         "scripts": ["./scripts/background.js"],
