@@ -23,6 +23,7 @@ Parts Pal is pretty intuitive to use, but here are step by step instructions:
     specific motorcycle. Then select sold listings, as this reflects the most 
     reasonable prices, select price highest first as this is where the majority of 
     the money from the salvage parts will come from.
+    - It is a good idea to switch layout for Ebay to grid view, rather than list view for auctions. The parts pal extension is formatted to look beter in a grid view.
 
 5. click the extension icon (top right in screenshot)
 
