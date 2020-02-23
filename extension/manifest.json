@@ -1,8 +1,8 @@
 {
     "name": "Parts Pal",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Find an upper bound on what to pay when buying a salvage title",
-    "permissions": ["activeTab", "declarativeContent", "storage", "http://*/", "https://*/"],
+    "permissions": ["activeTab", "storage", "https://floating-escarpment-36391.herokuapp.com/"],
     "background": {
         "scripts": ["./scripts/background.js"],
         "persistent": false
